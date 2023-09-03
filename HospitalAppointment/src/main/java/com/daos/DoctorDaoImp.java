@@ -28,6 +28,7 @@ public class DoctorDaoImp implements DoctorDao {
 	String SQL_INSERT_PATIENT = " insert into mbs_patients(p_fname,p_lname,p_gender,p_age,p_phone) values(?,?,?,?,?)";
 	String SQL_UPDATE_SLOTS = "update mbs_slots set s_status='Booked' where s_id=?";
 	String SQL_INSERT_APPOINTMENT = " insert into mbs_appointments(a_ptid,a_docid,a_sid) values(?,?,?)";
+	String SQL_GET_DOCTOR_SLOTS = "select * from mbs_slots where s_status='Available' and s_docid=?";
 
 	
 	@Autowired
@@ -77,6 +78,12 @@ public class DoctorDaoImp implements DoctorDao {
 	public boolean bookAppointment(Patient pt, DoctorSlots ds) {
 		// TODO Auto-generated method stub
 		return jdbcTemplate.update(SQL_INSERT_APPOINTMENT,1,ds.getS_docid(),ds.getS_id())>0;
+	}
+
+	@Override
+	public ArrayList<DoctorSlots> getSlotsOfDoctor(int doc_id) {
+		// TODO Auto-generated method stub
+		return (ArrayList<DoctorSlots>) jdbcTemplate.query(SQL_GET_DOCTOR_SLOTS, new Object[] {doc_id},new DoctorSlotsMapper());
 	}
 	
 }

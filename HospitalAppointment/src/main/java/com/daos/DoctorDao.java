@@ -15,4 +15,5 @@ public interface DoctorDao {
 	boolean updateSlots(DoctorSlots ds);
 	boolean addPatient(Patient pt);
 	boolean bookAppointment(Patient pt, DoctorSlots ds);
+	ArrayList<DoctorSlots> getSlotsOfDoctor(int doc_id);
 }

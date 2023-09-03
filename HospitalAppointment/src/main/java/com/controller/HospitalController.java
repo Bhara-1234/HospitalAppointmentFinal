@@ -77,7 +77,8 @@ public class HospitalController {
 
 	@RequestMapping(value = "/CheckSlots", method = RequestMethod.GET)
 	public String checkSlots(Doctor doc, Model model) {
-
+		ArrayList<DoctorSlots> doctorSlotList = dd.getSlotsOfDoctor(doc.getDoc_id());
+		model.addAttribute("doctorsList", doctorSlotList);
 		return "calender";
 	}
 }

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" import="java.util.ArrayList,com.models.DoctorSlots,java.time.LocalDate" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -77,6 +77,14 @@ button[disabled] {
 	background-color: #ccc;
 	cursor: not-allowed;
 }
+button[noslots] {
+	background-color:red ;
+	cursor: not-allowed;
+}
+button[slots] {
+	background-color:green;
+	color:white;
+}
 .product button {
 	width: 100%; /* Full-width button */
 	padding: 10px;
@@ -88,14 +96,13 @@ button[disabled] {
 	transition: background-color 0.3s;
 }
 
-.product button:hover {
-	background-color: #555;
-}
+
 </style>
 </head>
 <body>
 	<%
 	int doc_id = Integer.parseInt(request.getParameter("doc_id"));
+	int check=0;
 	%>
 	<div class="header">
 		<h1>MSB Hospital</h1>
@@ -127,15 +134,23 @@ button[disabled] {
 
 	<script>
 		let currentYear =
-	<%=java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)%>
-		;
+	<%=java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)%>;
+		
 		let currentMonth =
-	<%=java.util.Calendar.getInstance().get(java.util.Calendar.MONTH)%>
-		;
+	<%=java.util.Calendar.getInstance().get(java.util.Calendar.MONTH)%>;
 		let displayStartMonth, displayEndMonth;
 
-
+		<%
+		
+		ArrayList<DoctorSlots> docd = (ArrayList<DoctorSlots>) request.getAttribute("doctorsList");
+		ArrayList<LocalDate> dates=new ArrayList<>();
+		for(DoctorSlots d:docd){
+			dates.add(d.getS_date());
+		}
+		
+		%>
 	    function generateCalendar(year, month) {
+	    	
 	        const calendarTitle = document.getElementById('calendar-title');
 	        const calendarBody = document.getElementById('calendar-body');
 	        const firstDay = new Date(year, month, 1);
@@ -149,18 +164,26 @@ button[disabled] {
 
 	        for (let i = 0; i < 6; i++) { // 6 rows for maximum calendar height
 	            html += '<tr>';
+	            
 	            for (let j = 0; j < 7; j++) {
+	            	let check=0;
 	                if ((i === 0 && j < startingDay) || date > daysInMonth) {
 	                    html += '<td></td>';
 	                } else {
 	                    const dayOfWeek = (j + 1) % 7; // Adjust day numbering starting from Sunday (0)
+	 
+	            
 	                    const isWeekend = dayOfWeek === 1 || dayOfWeek === 0; // 0 is Sunday, 6 is Saturday
+	                    const isAvail = date === 4 || date === 7 || date === 19 || date === 30 || date === 21 || date === 13;
+;// 0 is Sunday, 6 is Saturday
 	                    const buttonClass = isWeekend ? 'date-button weekend'
 	                            : 'date-button';
 	                    html += '<td><form action="slots?"> <input type="hidden" name="doc_id" value="<%=doc_id%>"><input type="hidden" name="yesr" value="'+year+'"><input type="hidden" name="month" value="'+(month+1)+'"><input type="hidden" name="day" value="'+date+'"><button type="submit" class="'
 	                            + buttonClass
 	                            + '" '
 	                            + (isWeekend ? 'disabled' : '')
+	                           	+ (isAvail ? 'noslots' :'slots' )
+
 	                            + ' onclick="'
 	                            + (isWeekend ? '' : 'selecuutedDate(' + date
 	                                    + ',' + (month + 1) + ',' + year + ')')

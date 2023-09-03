@@ -72,7 +72,7 @@ body {
 
 /* Custom styles for the button */
 .product button {
-	background-color: #007bff;
+	background-color: green;
 	color: #fff;
 	border: none;
 	padding: 10px 20px;

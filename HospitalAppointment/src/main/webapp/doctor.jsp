@@ -101,7 +101,7 @@ body {
 		<br>
 		<br>
 		<div class="product">
-			<img src="images/john_smith.jpg" alt="<%=doc_name%>">
+			<img src="images/<%=doc_img%>" alt="<%=doc_name%>">
 			<h3>
 				Name:<%=doc_name%></h3>
 			<h3>
