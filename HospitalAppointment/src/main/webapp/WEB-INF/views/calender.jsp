@@ -174,7 +174,7 @@ button[slots] {
 	 
 	            
 	                    const isWeekend = dayOfWeek === 1 || dayOfWeek === 0; // 0 is Sunday, 6 is Saturday
-	                    const isAvail = date === 4 || date === 7 || date === 19 || date === 30 || date === 21 || date === 13;
+	   
 ;// 0 is Sunday, 6 is Saturday
 	                    const buttonClass = isWeekend ? 'date-button weekend'
 	                            : 'date-button';
@@ -182,7 +182,7 @@ button[slots] {
 	                            + buttonClass
 	                            + '" '
 	                            + (isWeekend ? 'disabled' : '')
-	                           	+ (isAvail ? 'noslots' :'slots' )
+	                  
 
 	                            + ' onclick="'
 	                            + (isWeekend ? '' : 'selecuutedDate(' + date
