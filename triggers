@@ -1,0 +1,33 @@
+CREATE TRIGGER InsertTrigger
+AFTER INSERT ON mbs_doctorschedule
+FOR EACH ROW
+EXECUTE FUNCTION Insert_Function();
+
+CREATE OR REPLACE FUNCTION Insert_Function() RETURNS Trigger AS $$
+BEGIN
+    call generate_doctor_slots(new.doctorid); 
+	return new;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER UpdateTrigger
+AFTER Update ON mbs_doctorschedule
+FOR EACH ROW
+EXECUTE FUNCTION Update_Function();
+
+
+CREATE OR REPLACE FUNCTION Update_Function() RETURNS Trigger AS $$
+Declare
+	doct_id int;
+	ftime time;
+	ttime time;
+BEGIN
+	doct_id :=old.doctorid;
+	ftime :=old.doctoravailablefrom;
+	ttime :=old.doctoravailableto;
+	delete from mbs_doctorslots where doct_id=slot_doct_id and slot_from=ftime and slot_to=ttime;
+    call generate_doctor_slots(new.doctorid); 
+	return new;
+END;
+$$ LANGUAGE plpgsql;
