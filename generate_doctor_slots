@@ -79,6 +79,7 @@ DECLARE
    j int := 1;
    ftime time;
    ttime time;
+   stime time;
    pt varchar;
 BEGIN
     SELECT num_days FROM mbs_doctorslotsrange WHERE doct_id = doc_id INTO days; 
@@ -90,11 +91,21 @@ BEGIN
         slots := actual - occured;
         RAISE NOTICE 'actual: %', actual;
         j := 1;
-     
+SELECT MAKE_TIME(
+    0::integer,  -- Hours
+    (doctoravailableslot)::integer,  -- Minutes
+    0::integer  -- Seconds
+) INTO stime
+FROM mbs_doctorschedule
+WHERE doctorid = doc_id
+AND POSITION(daynum::TEXT IN doctorschedule) > 0;
         select doctoravailablefrom , doctoravailableto from mbs_doctorschedule where doctorid=doc_id and POSITION(daynum::TEXT IN doctorschedule)>0  into ftime,ttime;
         WHILE j <= slots LOOP
-            INSERT INTO mbs_slots (s_docid, s_date, s_ftime, s_ttime, s_status)
-            VALUES (doc_id, dat, ftime, ttime, 'Open');
+ttime := ftime::interval + stime::interval;
+            INSERT INTO mbs_slots (s_id,s_docid, s_date, s_ftime, s_ttime, s_status)
+            VALUES (i,doc_id, dat, ftime, ttime, 'Open');
+        
+            ftime:= ttime;
             j := j + 1;
         END LOOP;
         i := i + 1;
