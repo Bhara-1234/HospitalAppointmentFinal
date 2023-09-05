@@ -1,10 +1,8 @@
-
-
-
-CREATE OR REPLACE FUNCTION GetSlotsCount(doct_id INT, weekday INT) RETURNS INT AS $$
+CREATE OR REPLACE FUNCTION GetSlotsCountsai(doct_id INT, weekday INT) RETURNS INT AS $$
 DECLARE
   weekpattern VARCHAR(10);
-  appointment_count INT;
+  appointment_count INT:=0;
+  temp_count INT;
   pat_slot INT;
   flag INT := 0;
   
@@ -17,6 +15,7 @@ BEGIN
 OPEN cur_weekpattern;
   
   LOOP
+    flag:=0;
     FETCH cur_weekpattern INTO  weekpattern;
     EXIT WHEN NOT FOUND;
     
@@ -35,15 +34,15 @@ OPEN cur_weekpattern;
     SELECT 
       ((EXTRACT(HOUR FROM doctoravailableto) * 60 + EXTRACT(MINUTE FROM doctoravailableto)) -
       (EXTRACT(HOUR FROM doctoravailablefrom) * 60 + EXTRACT(MINUTE FROM doctoravailablefrom))) / pat_slot
-    INTO appointment_count
-    FROM mbs_doctorschedule; 
-    CLOSE cur_weekpattern;
-    RETURN appointment_count;
+    INTO temp_count
+    FROM mbs_doctorschedule where doctorid=doct_id and doctorschedule=weekpattern;
+    RAISE NOTICE 'week patternyfyutfyutudddyt: %', temp_count;
+
+    appointment_count:=appointment_count +temp_count;
   END IF;
   end loop;
   CLOSE cur_weekpattern;
    
-  RETURN 0;
+  RETURN appointment_count;
 END;
 $$ LANGUAGE plpgsql;
-
